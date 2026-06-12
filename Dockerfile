@@ -1,4 +1,4 @@
-FROM maven:3.9.8-eclipse-temurin-21 AS build
+FROM maven:3.8.5-openjdk-11 AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN mvn clean package -DskipTests -Dskip.installnodenpm -Dskip.npm
 
 
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:11-jre
 
 WORKDIR /app
 
