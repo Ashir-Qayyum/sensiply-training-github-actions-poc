@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+
+    environment:
+      POSTGRES_DB: student
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - full-stack-spring-boot-react
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: spring-backend
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - postgres
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/student
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+
+    networks:
+      - full-stack-spring-boot-react
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+
+    container_name: react-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - full-stack-spring-boot-react
+
+volumes:
+  postgres_data:
+
+networks:
+  full-stack-spring-boot-react:
+    driver: bridge
