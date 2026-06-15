@@ -1,0 +1,48 @@
+name: GitHub Actions WF Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setting up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/aws_key.pem
+          chmod 600 ~/.ssh/aws_key.pem
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+
+      - name: Deploying to EC2
+        run: |
+          ssh -i ~/.ssh/aws_key.pem \
+              ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+
+            set -e
+
+            cd ${{ secrets.APP_DIR }}
+
+            git pull origin main
+
+            mkdir -p secrets
+
+            echo '${{ secrets.APP_ENV }}' > .env
+
+            echo '${{ secrets.POSTGRES_PASSWORD }}' \
+              > secrets/postgres_password.txt
+
+            docker compose down
+
+            docker compose up --build -d
+            sleep 10
+            docker image prune -f
+
+          EOF
