@@ -231,7 +231,7 @@ function App() {
                             <PageHeader
                                 ghost={false}
                                 avatar={{ src: 'https://user-images.githubusercontent.com/25921121/140602454-7f800b31-67d2-48e8-9f75-aeef5a4e9095.png' }}
-                                title="Modified To Test CI/CD"
+                                title="Modified to Test CI/CD"
                                 subTitle="Student Management System"
                             >
                                 <Descriptions size="small" column={3}>
