@@ -7,3 +7,9 @@
 #Also not includeing secrets folder for DEMO...
 
 #secrets/
+
+
+# Both the .env file, and the secrets/ folder are not required for the 
+# CI/CD, as I am creating .env file , and secrets folder with 
+# postgres_password.txt file in the server during CI/CD Workflow
+# importing values from the GitHub Actions Secrets..
